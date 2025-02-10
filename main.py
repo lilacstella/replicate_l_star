@@ -1,12 +1,6 @@
-def is_member(q):
-    print(q)
-    a = input(f'Is "{q}" in the language?')
-    return True if a == 'y' else False
+from teacher import Teacher
 
-def is_equivalent(grammar):
-    print(grammar)
-    a = input('Is the grammar correct?')
-    return a == 'y', []
+alphabet = list('ab')
 
 def s_concat_alphabet(S, alphabet):
     return [s + a for s in S for a in alphabet if s + a not in S]
