@@ -30,21 +30,45 @@ def main():
     # it has a rows and columns
     # going to represent each row as an array
     # with indices corresponding to E
-    O: dict = {}
-    alphabet = list('ab')
-    S: list = ['']
-    E: list = ['']
-
-    # populate table
-    O[''] = [is_member('')]
+    O: dict = {}  # observation table
+    S: list = ['']  # prefixes (rows)
+    E: list = ['']  # postfixes (columns)
+    teacher = Teacher()
+    # populate table with first column
+    O[''] = [teacher.is_member('')]
     for a in alphabet:
-        O[a] = [is_member(a)]
+        O[a] = [teacher.is_member(a)]
 
-    print(s_concat_alphabet(S, alphabet))
-    # is it closed?
-    for i in s_concat_alphabet(S, alphabet):
-        O[i] = [is_member(i)]
-    # is it consistent?
+    done = False
+    while not done:
+        # is it closed?
+        if not closed(O, S):
+            # adding things to S has side effects
+            # it will make S•Σ larger too..
+            # how do I know which ones are new and need to be updated?
+            continue
+
+        # is it consistent?
+        if not consistent():
+            continue
+        # present to the teacher
+        done, counter_example = teacher.is_equivalent(O)
+        if done:
+            break
+        # add counter example to the table
+        new_prefices = [i for i in all_prefixes_of_str(counter_example) if i not in S]
+        for i in new_prefices:
+            # how do I stop asking the same question?
+            O[i] = [teacher.is_member(i + e) for e in E]
+
+def closed(O, S):
+    for i in prefix_concat_alphabet(S):
+        # is there a row in the S section that is equivalent to curr in S•Σ?
+        if not any(O[i] == O[s] for s in S):
+            # no matches -> add the current i to S
+            S.append(i)
+            return False
+    return True
 
     # present to the teacher
 
