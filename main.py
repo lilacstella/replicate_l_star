@@ -74,9 +74,8 @@ def closed(O, S):
         # is there a row in the S section that is equivalent to curr in S•Σ?
         if not any(O[i] == O[s] for s in S):
             # no matches -> add the current i to S
-            S.append(i)
-            return False
-    return True
+            return False, i
+    return True, None
 
 def consistent(O, S):
     # for every type or row value in S section of O
