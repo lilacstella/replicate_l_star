@@ -56,7 +56,7 @@ def main():
             continue
 
         # is it consistent?
-        is_consistent, new_extension = consistent(O, S, E)
+        is_consistent, new_extension = consistent(O, S)
         if not is_consistent:
             E.append(new_extension)
             continue
@@ -93,8 +93,11 @@ def consistent(O, S):
                 # can we make the assumption that this is already filled?
                 if O[matching_row_s[0] + a] != O[s + a]:
                     # need to figure out what to add to E
-                    return False
+                    # may need to put observation table as a class
+                    # that intercepts unknown values and asks the teacher
+                    return False,
 
+    return True, None
 
 if __name__ == '__main__':
     main()
