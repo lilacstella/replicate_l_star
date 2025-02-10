@@ -40,6 +40,9 @@ def main():
         # reset table every loop
         for s in S:
             O[s] = [teacher.is_member(s + e) for e in E]
+        # we should also generate all of S•Σ
+        for i in prefix_concat_alphabet(S):
+            O[i] = [teacher.is_member(i + e) for e in E]
 
         # is it closed?
         is_closed, new_prefix = closed(O, S)
