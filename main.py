@@ -2,8 +2,11 @@ from teacher import Teacher
 
 alphabet = list('ab')
 
-def s_concat_alphabet(S, alphabet):
+def prefix_concat_alphabet(S): # S•Σ
     return [s + a for s in S for a in alphabet if s + a not in S]
+
+def all_prefixes_of_str(str):
+    return [str[:i] for i in range(len(str) + 1)]
 
 def main():
     # we have an observation table O
