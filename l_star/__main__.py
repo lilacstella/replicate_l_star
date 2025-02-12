@@ -22,7 +22,9 @@ def l_star():
             continue
 
         # present to the teacher
-        done, counter_example = teacher.is_equivalent(observation_table)
+        dfa, start = observation_table.convert_to_dfa()
+        print(start)
+        done, counter_example = teacher.is_equivalent(dfa)
         if done:
             break
 
