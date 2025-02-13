@@ -12,8 +12,8 @@ class Teacher:
         self.memory[q] = is_member
         return is_member
 
-    def is_equivalent(self, grammar):
-        print(grammar)
+    def is_equivalent(self, dfa):
+        dfa.view()
         a = input('Is the grammar correct?')
         if a == 'y':
             return True, None
