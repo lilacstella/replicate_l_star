@@ -20,3 +20,6 @@ def find_duplicate_rows(O: 'ObservationTable', S: list):
             duplicates.append(rows)
 
     return duplicates
+
+def represent_state_in_bin(state: list):
+    return ''.join(['1' if i else '0' for i in state])

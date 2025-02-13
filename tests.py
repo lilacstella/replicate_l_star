@@ -1,6 +1,6 @@
 from l_star import alphabet
 from l_star.observation_table import ObservationTable
-from l_star.util import prefix_concat_alphabet, all_prefixes_of_str, find_duplicate_rows
+from l_star.util import prefix_concat_alphabet, all_prefixes_of_str, find_duplicate_rows, represent_state_in_bin
 
 
 def test_list_equality():
@@ -54,12 +54,23 @@ def test_zip():
             for one, two in zip(O[matching_row_s[0] + a], O[s + a]):
                 print(one, two)
 
+def test_represent_state_in_bin():
+    print(represent_state_in_bin([True, False, False]))
+    print(represent_state_in_bin([False, False, False]))
+    print(represent_state_in_bin([True, True, False]))
+    print(represent_state_in_bin([True, False, True]))
+    assert represent_state_in_bin([True, False, False]) == '100'
+    assert represent_state_in_bin([False, False, False]) == '000'
+    assert represent_state_in_bin([True, True, False]) == '110'
+    assert represent_state_in_bin([True, False, True]) == '101'
+
 def run_tests():
-    test_list_equality()
-    test_prefix_concat_alphabet()
-    test_all_prefixes_of_str()
-    test_duplicate_rows()
-    test_zip()
+    # test_list_equality()
+    # test_prefix_concat_alphabet()
+    # test_all_prefixes_of_str()
+    # test_duplicate_rows()
+    # test_zip()
+    test_represent_state_in_bin()
     print('All tests passed!')
 
 if __name__ == '__main__':
