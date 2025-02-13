@@ -3,7 +3,7 @@ from l_star.util import all_prefixes_of_str, prefix_concat_alphabet, find_duplic
 from l_star.observation_table import ObservationTable
 
 def l_star():
-    observation_table = ObservationTable()
+    observation_table = ObservationTable() # <- TODO can we not regenerate the whole table every time
 
     done = False
     while not done:
@@ -46,7 +46,7 @@ def consistent(O, S):
     # for every type or row value in S section of O
     # do they go to the same row type if the next character is
     # every character in the alphabet?
-    # can these things be generators? <- TODO
+    # TODO can these things be generators?
     for matching_row_s in find_duplicate_rows(O, S):
         # do all s in matching_row_s go to the same place?
         # len(matching_row_s) >= 2
