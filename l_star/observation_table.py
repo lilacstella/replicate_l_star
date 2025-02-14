@@ -19,7 +19,7 @@ class ObservationTable:
             self.O[key] = [teacher.is_member(key + e) for e in E]
         return self.O[key]
 
-    def convert_to_dfa(self):
+    def create_dfa(self):
         d = DeterministicFiniteAutomaton(represent_state_in_bin(self.O['']))
         for s in S:
             d.add_state(represent_state_in_bin(self.O[s]), self.O[s][0])

@@ -13,8 +13,9 @@ class Teacher:
         return is_member
 
     def is_equivalent(self, dfa):
+        regex = dfa.generate_regex()
         dfa.view()
-        a = input('Is the grammar correct?')
+        a = input(f'Is this regex {regex} correct?')
         if a == 'y':
             return True, None
         return False, input('What is a counter example? ')
