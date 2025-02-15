@@ -21,6 +21,7 @@ def l_star():
             E.append(new_extension)
             continue
 
+        print(observation_table)
         # present to the teacher
         dfa = observation_table.create_dfa()
         done, counter_example = teacher.is_equivalent(dfa)
