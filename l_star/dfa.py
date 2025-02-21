@@ -26,12 +26,3 @@ class DeterministicFiniteAutomaton:
     def view(self):
         automata = DFA_VISUALIZATION(self.states, alphabet, self.transitions, self.start_state, self.accepting_states)
         automata.view("dfa")
-
-    def generate_regex(self):
-        self.reverse_transitions[self.start_state].append((None, 'ε'))
-
-        # repeat until desired close form for start state equation is reached
-            # simplify
-
-            # substitute
-

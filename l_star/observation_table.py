@@ -25,7 +25,6 @@ class ObservationTable:
             d.add_state(represent_state_in_bin(self.O[s]), self.O[s][0])
             for a in alphabet:
                 d.add_transition(represent_state_in_bin(self.O[s]), a, represent_state_in_bin(self.O[s + a]))
-
         return d
 
     def __str__(self):
