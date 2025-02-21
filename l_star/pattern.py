@@ -1,20 +1,36 @@
 from l_star.dfa import DeterministicFiniteAutomaton
 from l_star import alphabet
 
-def strip_parenthesis(s: str) -> str:
-    if s.startswith("(") and s.endswith(")"):
-        return s[1:-1]
-    return s
 
-class Pattern:
-    def __init__(self, pattern: str):
-        if len(pattern) > 1:
-            self.pattern = f"({pattern})"
-        else:
-            self.pattern = pattern
+class Symbol:
+    def __init__(self, symbol: str):
+        self.symbol = symbol
 
     def __str__(self):
-        return self.pattern
+        return self.symbol
+
+    def __eq__(self, other):
+        return isinstance(other, Symbol) and self.symbol == other.symbol
+
+class EmptyLang(Symbol):
+    def __init__(self):
+        super().__init__("∅")
+
+class EmptyStr(Symbol):
+    def __init__(self):
+        super().__init__("ε")
+
+class Metacharacter(Symbol):
+    def __init__(self, symbol: str):
+        super().__init__(".")
+
+class Pattern:
+    def __init__(self, *args, symbol: Symbol = None):
+        # a list of symbols, and other patterns
+        if symbol:
+            self.members = [symbol]
+        else:
+            self.members = args
 
     def __eq__(self, other):
         return isinstance(other, Pattern) and self.pattern == other.pattern
@@ -56,17 +72,22 @@ class Pattern:
 
         return Pattern(f"({strip_parenthesis(self.pattern)})*")
 
-    @staticmethod
-    def empty_lang() -> 'Pattern':
-        return Pattern("∅")
 
-    @staticmethod
-    def empty_str() -> 'Pattern':
-        return Pattern("ε")
+class Union(Pattern):
+    def __init__(self, *args):
+        self.members = args
 
-    @staticmethod
-    def dot() -> 'Pattern':
-        return Pattern(".")
+    def __str__(self):
+        return f"({'|'.join(str(member) for member in self.members)})"
+
+class Concatenation(Pattern):
+    def __init__(self, symbol: str, *args):
+        super().__init__(symbol)
+        self.members = args
+
+    def __str__(self):
+        return ''.join(str(member) for member in self.members)
+
 
 def generate_regex(dfa: DeterministicFiniteAutomaton) -> Pattern:
     # Create new start and accept states.
