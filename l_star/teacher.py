@@ -9,16 +9,19 @@ class Teacher:
     def is_member(self, q):
         if q in self.memory:
             return self.memory[q]
-        a = input(f'Is "{q}" in the language?')
-        is_member = True if 'y' in a else False
-
+        human = False
+        if human:
+            a = input(f'Is "{q}" in the language?')
+            is_member = True if 'y' in a else False
+        else:
+            is_member = self.correctness_agent(q)
         self.memory[q] = is_member
         return is_member
 
     @staticmethod
     def is_equivalent(dfa):
-        regex = generate_regex(dfa)
         dfa.view()
+        regex = generate_regex(dfa)
         a = input(f'Is this regex {regex} correct?')
         if 'y' in a:
             return True, None
@@ -30,3 +33,8 @@ class Teacher:
             print('Counter example must be in the alphabet')
 
         return False, counter_example
+
+    @staticmethod
+    def correctness_agent(q):
+        if len(q) >= 2 and q[1] == 'a':
+            return True

@@ -1,20 +1,16 @@
-from l_star.dfa import DeterministicFiniteAutomaton
 from l_star import alphabet
+from l_star.dfa import DeterministicFiniteAutomaton
 
-def strip_parenthesis(s: str) -> str:
-    if s.startswith("(") and s.endswith(")"):
-        return s[1:-1]
-    return s
 
 class Pattern:
-    def __init__(self, pattern: str):
-        if len(pattern) > 1:
-            self.pattern = f"({pattern})"
-        else:
-            self.pattern = pattern
+    def __init__(self, symbol: str = None, members: list['Pattern'] = None):
+        if symbol and members:
+            raise ValueError("Pattern must be either a symbol or a list of members")
+        self.symbol = symbol
+        self.members = members
 
     def __str__(self):
-        return self.pattern
+        raise NotImplementedError("Should be implemented by child")
 
     def __eq__(self, other):
         return isinstance(other, Pattern) and self.pattern == other.pattern
@@ -57,16 +53,16 @@ class Pattern:
         return Pattern(f"({strip_parenthesis(self.pattern)})*")
 
     @staticmethod
-    def empty_lang() -> 'Pattern':
-        return Pattern("∅")
+    def empty_string():
+        return Symbol('ε')
 
     @staticmethod
-    def empty_str() -> 'Pattern':
-        return Pattern("ε")
+    def empty_lang():
+        return Symbol('∅')
 
     @staticmethod
-    def dot() -> 'Pattern':
-        return Pattern(".")
+    def any_symbol():
+        return Symbol('.')
 
 def generate_regex(dfa: DeterministicFiniteAutomaton) -> Pattern:
     # Create new start and accept states.
@@ -79,51 +75,49 @@ def generate_regex(dfa: DeterministicFiniteAutomaton) -> Pattern:
     states.add(new_accept)
 
     # Initialize a dictionary of dictionaries holding Regex objects.
-    R = {state: {state2: Pattern.empty_lang() for state2 in states} for state in states}
+    adj_m = {from_state: {to_state: Symbol.empty_lang() for to_state in states} for from_state in states}
 
     # Set labels for each transition in the DFA.
     for src in dfa.transitions:
         for symbol, dst in dfa.transitions[src].items():
-            R[src][dst] = R[src][dst] | Pattern(symbol)
+            adj_m[src][dst] |= Symbol(symbol)
 
     # Add an ε-transition from the new start to the original start.
-    R[new_start][dfa.start_state] = R[new_start][dfa.start_state] | Pattern.empty_str()
+    adj_m[new_start][dfa.start_state] = Symbol.empty_string()
 
     # For every accepting state, add an ε-transition to the new accept state.
     for a_state in dfa.accepting_states:
-        R[a_state][new_accept] = R[a_state][new_accept] | Pattern.empty_str()
+        adj_m[a_state][new_accept] = Symbol.empty_string()
+
 
     # Eliminate states one by one, except new_start and new_accept.
-    elimination_states = states - {new_start, new_accept}
-    for r in list(elimination_states):
-        for i in states:
-            for j in states:
-                # Update rule: R[i][j] = R[i][j] ∪ (R[i][r] · (R[r][r])^* · R[r][j])
-                new_expr = R[i][r] + (R[r][r].star() + R[r][j])
-                # Note: Because our operators are overloaded, the above expression concatenates as intended.
-                R[i][j] = R[i][j] | new_expr
-        # "Remove" state r by nullifying its transitions.
-        for i in states:
-            R[i][r] = Pattern.empty_lang()
-        for j in states:
-            R[r][j] = Pattern.empty_lang()
+    # the states to consider/update are new_start + new_accept + all non_eliminated states
+    for r in dfa.states:
         states.remove(r)
+        for i in states: # for every state going to r
+            # what are all the ways that I can go to r?
+            # adj_m[i][r] already took care of that expression
+            for j in states: # for every state leaving r
+                # Update rule: adj_m[i][j] = adj_m[i][j] ∪ (adj_m[i][r] · (adj_m[r][r])^* · adj_m[r][j])
+                # the deletion of r will lead to more paths from i to j
+                print(f"Considering {i} -> {r} -> {j}: {adj_m[i][j]}")
+                new_expr = adj_m[i][r]
 
+                if adj_m[r][r].symbol != '∅':
+                    new_expr += adj_m[r][r].star()
+                new_expr += adj_m[r][j]
+
+                adj_m[i][j] |= new_expr
+                print(f"{adj_m[i][r]} + ({adj_m[r][r].star()} + {adj_m[r][j]}) = {new_expr}")
+                print(f"Updating {i} -> {j} to {adj_m[i][j]}")
+        print_adj_m(adj_m, states)
     # The regular expression for the language is the one from new_start to new_accept.
-    return R[new_start][new_accept]
+    return adj_m[new_start][new_accept]
 
-
-
-# # Define a sample DFA.
-# dfa = DeterministicFiniteAutomaton(starting_state="q0")
-# dfa.states = {"q0", "q1", "q2"}
-# dfa.accepting_states = {"q2"}
-# dfa.transitions = {
-#     "q0": {"a": "q1", "b": "q0"},
-#     "q1": {"a": "q2", "b": "q0"},
-#     "q2": {"a": "q2", "b": "q2"}
-# }
-#
-# # Convert the DFA to a regular expression.
-# regex = dfa_to_regex_state_elimination(dfa)
-# print("Regular expression for the DFA:", regex)
+# make a print adj matrix function
+def print_adj_m(adj_m, states):
+    print("----------------------------------------")
+    for src in states:
+        print(f"From {src}:")
+        for dest in adj_m[src]:
+            print(f"    -> {dest}: {adj_m[src][dest]}")

@@ -25,4 +25,4 @@ class DeterministicFiniteAutomaton:
 
     def view(self):
         automata = DFA_VISUALIZATION(self.states, alphabet, self.transitions, self.start_state, self.accepting_states)
-        automata.view("dfa")
+        automata.view("DFA")
