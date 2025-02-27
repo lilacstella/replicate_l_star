@@ -12,45 +12,110 @@ class Pattern:
     def __str__(self):
         raise NotImplementedError("Should be implemented by child")
 
-    def __eq__(self, other):
-        return isinstance(other, Pattern) and self.pattern == other.pattern
-
-    def __or__(self, other: 'Pattern') -> 'Pattern':
-        # Union: if one side is the empty set, return the other.
-        if self.pattern == "∅":
+    def __or__(self, other):
+        if self.symbol == '∅':
             return other
-        if other.pattern == "∅":
+        if other.symbol == '∅':
             return self
-        if self.pattern == other.pattern:
-            return self
-        # check if this pattern is somehow an or of all characters in the alphabet
-        print(set(strip_parenthesis(self.pattern).split("|")))
-        if set(strip_parenthesis(self.pattern).split("|")) == alphabet:
-            return Pattern.dot()
 
-        return Pattern(f"{self.pattern}|{other.pattern}")
+        if self.symbol == 'ε' and other.symbol == 'ε':
+            return Symbol.empty_string()
 
-    def __add__(self, other: 'Pattern') -> 'Pattern':
-        # Concatenation: if either is ∅, then the result is ∅.
-        if self.pattern == "∅" or other.pattern == "∅":
-            return Pattern("∅")
-        # ε acts as the identity for concatenation.
-        if self.pattern == "ε":
-            return other
-        if other.pattern == "ε":
-            return self
-        return Pattern(f"{self.pattern}{other.pattern}")
+        # if the members consists of the entire alphabet, return any symbol
+        if (isinstance(self, Symbol) and self.symbol == '.') or (isinstance(other, Symbol) and other.symbol == '.'):
+            return Symbol.any_symbol()
 
-    def star(self) -> 'Pattern':
-        # The Kleene star of ∅ or ε is ε.
-        if self.pattern in ["∅", "ε"]:
-            return Pattern("ε")
-        if self.pattern.endswith("*"):
-            return self
-        if len(self.pattern) == 1:
-            return Pattern(f"{self.pattern}*")
+        union = Union(self, other)
 
-        return Pattern(f"({strip_parenthesis(self.pattern)})*")
+        # check if member of this union consists of the entire alphabet
+        if all(isinstance(member, Symbol) for member in union.members) and \
+            set(member.symbol for member in union.members) == alphabet:
+            return Symbol.any_symbol()
+
+        return union
+
+    def __add__(self, other):
+        if self.symbol == '∅' or other.symbol == '∅':
+            return Symbol.empty_lang()
+
+        if isinstance(self, Star) and isinstance(other, Symbol):
+            if self.members[0].symbol == other.symbol:
+                return self
+        if isinstance(other, Star) and isinstance(self, Symbol):
+            if other.members[0].symbol == self.symbol:
+                return other
+
+        return Concatenation(self, other)
+
+    def star(self):
+        if self.symbol == '∅':
+            return Symbol.empty_lang()
+        return Star(self)
+
+class Union(Pattern):
+    def __init__(self, first: Pattern, second: Pattern):
+        if isinstance(first, Union):
+            members = first.members
+        else:
+            members = [first]
+
+        if isinstance(second, Union):
+            members.extend(second.members)
+        else:
+            members.append(second)
+
+        # members should be unique
+        members = list(set(members))
+        super().__init__(members=members)
+
+    def __str__(self):
+        # I am trying to make quesiton mark if one of them is epsilon
+        if len(self.members) == 2:
+            if self.members[0].symbol == 'ε':
+                if isinstance(self.members[1], Symbol):
+                    return f"{self.members[1]}?"
+                return f"({self.members[1]})?"
+            if self.members[1].symbol == 'ε':
+                if isinstance(self.members[0], Symbol):
+                    return f"{self.members[0]}?"
+                return f"({self.members[0]})?"
+        return f"({'|'.join(str(member) for member in self.members)})"
+
+class Concatenation(Pattern):
+    def __init__(self, first: Pattern, second: Pattern):
+        if isinstance(first, Concatenation):
+            first = first.members
+        else:
+            first = [first]
+
+        if isinstance(second, Concatenation):
+            second = second.members
+        else:
+            second = [second]
+
+        super().__init__(members=first + second)
+
+    def __str__(self):
+        # keep all non-ε
+        self.members = [member for member in self.members if member.symbol != 'ε']
+
+        return ''.join(str(member) for member in self.members)
+
+class Star(Pattern):
+    def __init__(self, first: Pattern):
+        super().__init__(members=[first])
+
+    def __str__(self):
+        if isinstance(self.members[0], Symbol) or str(self.members[0])[-1] == ')':
+            return f"{self.members[0]}*"
+        return f"({self.members[0]})*"
+
+class Symbol(Pattern):
+    def __init__(self, symbol: str):
+        super().__init__(symbol=symbol)
+
+    def __str__(self):
+        return self.symbol
 
     @staticmethod
     def empty_string():
