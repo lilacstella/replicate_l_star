@@ -5,15 +5,16 @@
 ## Setup
 This module depends on the "automathon" library that uses graphviz to visualize the DFA that we genereate. 
 
-In the python environment for this project
-```shell
-pip install -r requirements.txt
-```
 
 To use the `graphviz` library, we need the executable of the same name on our path. For mac, 
 
 ```shell
 brew install graphviz
+```
+
+In the python environment for this project
+```shell
+pip install -r requirements.txt
 ```
 
 To run the project, in the root of this repository 
