@@ -21,9 +21,9 @@ def l_star():
             E.append(new_extension)
             continue
 
-        print(f"{S=}")
-        print(f"{E=}")
-        print(f"{str(observation_table)=}")
+        # print(f"{S=}")
+        # print(f"{E=}")
+        # print(f"{str(observation_table)=}")
         # present to the teacher
         dfa = observation_table.create_dfa()
         done, counter_example = teacher.is_equivalent(dfa)

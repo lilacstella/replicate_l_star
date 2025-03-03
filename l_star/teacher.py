@@ -9,7 +9,7 @@ class Teacher:
     def is_member(self, q):
         if q in self.memory:
             return self.memory[q]
-        human = False
+        human = True
         if human:
             a = input(f'Is "{q}" in the language?')
             is_member = True if 'y' in a else False
@@ -36,5 +36,8 @@ class Teacher:
 
     @staticmethod
     def correctness_agent(q):
-        if len(q) >= 2 and q[1] == 'a':
+        # if len(q) >= 2 and q[1] == 'a':
+        #     return True
+        if 'a' in q and 'b' in q:
             return True
+        return False
