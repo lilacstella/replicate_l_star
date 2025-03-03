@@ -38,12 +38,9 @@ class Pattern:
         if self.symbol == '∅' or other.symbol == '∅':
             return Symbol.empty_lang()
 
-        if isinstance(self, Star) and isinstance(other, Symbol):
-            if self.members[0].symbol == other.symbol:
+        if isinstance(self, Star) and isinstance(other, Star):
+            if self.members[0].symbol == other.members[0].symbol:
                 return self
-        if isinstance(other, Star) and isinstance(self, Symbol):
-            if other.members[0].symbol == self.symbol:
-                return other
 
         return Concatenation(self, other)
 
@@ -165,7 +162,7 @@ def generate_regex(dfa: DeterministicFiniteAutomaton) -> Pattern:
             for j in states: # for every state leaving r
                 # Update rule: adj_m[i][j] = adj_m[i][j] ∪ (adj_m[i][r] · (adj_m[r][r])^* · adj_m[r][j])
                 # the deletion of r will lead to more paths from i to j
-                print(f"Considering {i} -> {r} -> {j}: {adj_m[i][j]}")
+                # print(f"Considering {i} -> {r} -> {j}: {adj_m[i][j]}")
                 new_expr = adj_m[i][r]
 
                 if adj_m[r][r].symbol != '∅':
@@ -173,9 +170,9 @@ def generate_regex(dfa: DeterministicFiniteAutomaton) -> Pattern:
                 new_expr += adj_m[r][j]
 
                 adj_m[i][j] |= new_expr
-                print(f"{adj_m[i][r]} + ({adj_m[r][r].star()} + {adj_m[r][j]}) = {new_expr}")
-                print(f"Updating {i} -> {j} to {adj_m[i][j]}")
-        print_adj_m(adj_m, states)
+                # print(f"{adj_m[i][r]} + ({adj_m[r][r].star()} + {adj_m[r][j]}) = {new_expr}")
+                # print(f"Updating {i} -> {j} to {adj_m[i][j]}")
+        # print_adj_m(adj_m, states)
     # The regular expression for the language is the one from new_start to new_accept.
     return adj_m[new_start][new_accept]
 
