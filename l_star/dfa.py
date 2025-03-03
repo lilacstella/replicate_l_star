@@ -5,7 +5,6 @@ class DeterministicFiniteAutomaton:
     def __init__(self, starting_state):
         self.states: set = set()
         self.transitions: dict[str: dict[str: str]] = {}
-        self.reverse_transitions: dict[str: tuple] = {}
         self.start_state: str = starting_state
         self.accepting_states: set = set()
         self.regex = None
