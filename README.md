@@ -11,6 +11,16 @@ The image visualization of `DFA.gv.png` as well as the plain text description of
 in the location of the command execution. Afterwards, continue following the prompt to either confirm the DFA or 
 provide a counter example that does not fit in the proposed DFA.
 
+## External dependencies
+This module depends on the graphviz library to visualize the DFA that we genereate.
+To use the `graphviz` library, we need the executable of the same name on our path. For mac, 
+
+```shell
+brew install graphviz
+```
+
+For other operating systems, refer to the [Graphviz download page](https://graphviz.org/download/)
+
 ## Quick start to use the implementation of the L* algorithm
 In a python environment, 
 ```sh
@@ -21,15 +31,6 @@ python -c "import l_star; l_star.l_star()"
 There can be further configuration of the alphabet by overwriting `l_star.alphabet`. 
 It is currently a set of string of characters in the alphabet. 
 ## Developmental Set Up
-This module depends on the "automathon" library that uses graphviz to visualize the DFA that we genereate. 
-
-
-To use the `graphviz` library, we need the executable of the same name on our path. For mac, 
-
-```shell
-brew install graphviz
-```
-
 In the python environment for this project
 ```shell
 pip install -r requirements.txt
