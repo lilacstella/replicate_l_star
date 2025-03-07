@@ -1,8 +1,17 @@
 # L* Replication
 
+This repo is a replication of the L* algorithm as described in the paper
 [Learning regular sets from queries and counterexamples](https://www.sciencedirect.com/science/article/pii/0890540187900526?via%3Dihub)
 
-## Using this implementation
+## Output
+In the console, the module will repeatedly ask for membership information for specific strings. 
+After a DFA is ready, the program will automatically generate two files. 
+
+The image visualization of `DFA.gv.png` as well as the plain text description of the graph in `DFA.gv` 
+in the location of the command execution. Afterwards, continue following the prompt to either confirm the DFA or 
+provide a counter example that does not fit in the proposed DFA.
+
+## Quick start to use the implementation of the L* algorithm
 In a python environment, 
 ```sh
 pip install git+https://github.com/lilacstella/replicate_l_star.git
@@ -30,9 +39,6 @@ To run the project, in the root of this repository
 ```shell
 python -m l_star
 ```
-
-## Output
-In the console, the module will repeatedly ask for membership information for specific strings. After a DFA is ready, the program will automatically generate two files. The image visualization of `DFA.gv.png` as well as the plain text description of the graph in `DFA.gv` in the location of the command execution. Afterwards, continue following the prompt to either confirm the DFA or provide a counter example that does not fit in the proposed DFA. 
 
 ## Further Configuration
 Refer to the `__init__.py` file to configure the alphabet that we are generating for. 
