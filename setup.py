@@ -11,6 +11,7 @@ setup(
     extras_require={
         'dev': [
             'pytest==8.3.5',
+            'pytest-mock==3.14.0',
         ],
     },
     include_package_data=True,
