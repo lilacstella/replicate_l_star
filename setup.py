@@ -8,6 +8,11 @@ setup(
         'automathon==0.0.15',
         'graphviz==0.16',
     ],
+    extras_require={
+        'dev': [
+            'pytest==8.3.5',
+        ],
+    },
     include_package_data=True,
     description='An implementation of the L* algorithm',
     long_description=open('README.md').read(),
