@@ -2,7 +2,14 @@
 
 [Learning regular sets from queries and counterexamples](https://www.sciencedirect.com/science/article/pii/0890540187900526?via%3Dihub)
 
-## Setup
+## Using this implementation
+In a python environment, 
+```sh
+pip install git+https://github.com/lilacstella/replicate_l_star.git
+```
+
+
+## Developmental Set Up
 This module depends on the "automathon" library that uses graphviz to visualize the DFA that we genereate. 
 
 

@@ -6,3 +6,5 @@ teacher = Teacher()
 
 S: list = ['']  # prefixes (rows)
 E: list = ['']  # postfixes (columns)
+
+from .__main__ import l_star
