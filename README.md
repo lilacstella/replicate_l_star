@@ -6,9 +6,11 @@
 In a python environment, 
 ```sh
 pip install git+https://github.com/lilacstella/replicate_l_star.git
+python -c "import l_star; l_star.l_star()"
 ```
 
-
+There can be further configuration of the alphabet by overwriting `l_star.alphabet`. 
+It is currently a set of string of characters in the alphabet. 
 ## Developmental Set Up
 This module depends on the "automathon" library that uses graphviz to visualize the DFA that we genereate. 
 
